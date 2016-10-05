@@ -70,7 +70,15 @@ public class LocationServicesDialogBoxModule extends ReactContextBaseJavaModule 
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        checkLocationService(true);
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+      checkLocationService(true);
+    }
+
+    public void onActivityResult(Activity activity, int requestCode, int resultCode, Intent data) {
+      checkLocationService(true);
+    }
+
+    public void onNewIntent(Intent intent) {
+
     }
 }
