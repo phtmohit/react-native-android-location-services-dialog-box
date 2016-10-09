@@ -34,16 +34,21 @@ public class LocationServicesDialogBoxModule extends ReactContextBaseJavaModule 
     }
 
     private void checkLocationService(Boolean activityResult) {
-        LocationManager locationManager = (LocationManager) currentActivity.getSystemService(Context.LOCATION_SERVICE);
+        if (currentActivity != null && promiseCallback != null) {
+            LocationManager locationManager = (LocationManager) currentActivity.getSystemService(Context.LOCATION_SERVICE);
 
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-            if (activityResult) {
-                promiseCallback.reject(new Throwable("disabled"));
+            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || !locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
+                if (activityResult || (map == null)) {
+                    promiseCallback.reject(new Throwable("disabled"));
+                } else {
+                    displayPromptForEnablingGPS(currentActivity, map, promiseCallback);
+                }
             } else {
-                displayPromptForEnablingGPS(currentActivity, map, promiseCallback);
+                promiseCallback.resolve("enabled");
             }
-        } else {
-            promiseCallback.resolve("enabled");
+        }
+        else if (promiseCallback != null) {
+            promiseCallback.reject(new Throwable("disabled"));
         }
     }
 
